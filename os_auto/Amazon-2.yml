@@ -1,0 +1,2 @@
+software: "httpd"
+doc_root: "/var/www/html"

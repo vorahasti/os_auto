@@ -1,0 +1,2 @@
+software: "apache2"
+doc_root: "var/www/html"

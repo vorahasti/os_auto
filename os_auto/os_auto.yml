@@ -1,0 +1,46 @@
+- hosts: redhat
+  vars_files: 
+  - "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}.yml"
+
+  tasks:
+  - name: "Create Directory for yum"
+    file:
+      state: directory
+      path: "/dvd"
+
+  - name: "Mount The directory"
+    mount:
+      src: "/dev/cdrom"
+      path: "/dvd"
+      state: mounted
+      fstype: "iso9660"
+
+  - name: "Yum for AppStream"
+    yum_repository:
+      name: "dvd1"
+      baseurl: "/dvd/AppStream"
+      description: "Yum for AppStream"
+      gpgcheck: no
+
+  - name: "Yum for BaseOs"
+    yum_repository:
+      name: "dvd2"
+      baseurl: "/dvd/BaseOS"
+      description: "Yum for BaseOs"
+      gpgcheck: no
+
+  - name: "Install  webserver"
+    package: 
+      name: "{{ software }}"
+      state: present
+
+  - name: "copying file"
+    template: 
+      src: "/root/os_auto/file.html.j2"
+      dest: "/var/www/html"
+
+  - name: "Start Service"
+    service:
+      name: "{{ software }}"
+      state: started
+
